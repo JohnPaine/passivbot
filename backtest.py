@@ -6,6 +6,7 @@ import argparse
 import asyncio
 import pprint
 from time import time
+from datetime import timedelta, datetime
 
 import numpy as np
 import pandas as pd
@@ -72,6 +73,53 @@ def plot_wrap(config, data):
     df = pd.DataFrame({**{"timestamp": data[:, 0], "qty": data[:, 1], "price": data[:, 2]}, **{}})
     print("dumping plots...")
     dump_plots(config, longs, shorts, sdf, df, n_parts=config["n_parts"])
+
+
+async def run_config(config, live_config, symbol):
+    print()
+
+    base_dirpath = os.path.join(
+        config["base_dir"],
+        f"{config['exchange']}{'_spot' if 'spot' in config['market_type'] else ''}",
+        config["symbol"],
+    )
+    config["caches_dirpath"] = make_get_filepath(os.path.join(base_dirpath, "caches", ""))
+    config["optimize_dirpath"] = make_get_filepath(os.path.join(base_dirpath, "optimize", ""))
+    config["plots_dirpath"] = make_get_filepath(os.path.join(base_dirpath, "plots", ""))
+
+    for k in (
+            keys := [
+                "exchange",
+                "spot",
+                "symbol",
+                "market_type",
+                "passivbot_mode",
+                "config_type",
+                "starting_balance",
+                "start_date",
+                "end_date",
+                "latency_simulation_ms",
+                "base_dir",
+            ]
+    ):
+        if k in config:
+            print(f"{k: <{max(map(len, keys)) + 2}} {config[k]}")
+    print()
+    if config["ohlcv"]:
+        data = load_hlc_cache(
+            symbol,
+            config["start_date"],
+            config["end_date"],
+            base_dir=config["base_dir"],
+            spot=config["spot"],
+            exchange=config["exchange"],
+        )
+    else:
+        downloader = Downloader(config)
+        data = await downloader.get_sampled_ticks()
+    config["n_days"] = round_((data[-1][0] - data[0][0]) / (1000 * 60 * 60 * 24), 0.1)
+    pprint.pprint(denumpyize(live_config))
+    plot_wrap(config, data)
 
 
 async def main():
@@ -170,40 +218,26 @@ async def main():
             live_config = spotify_config(live_config)
         config["ohlcv"] = args.ohlcv
 
-        print()
-        for k in (
-            keys := [
-                "exchange",
-                "spot",
-                "symbol",
-                "market_type",
-                "passivbot_mode",
-                "config_type",
-                "starting_balance",
-                "start_date",
-                "end_date",
-                "latency_simulation_ms",
-                "base_dir",
-            ]
-        ):
-            if k in config:
-                print(f"{k: <{max(map(len, keys)) + 2}} {config[k]}")
-        print()
-        if config["ohlcv"]:
-            data = load_hlc_cache(
-                symbol,
-                config["start_date"],
-                config["end_date"],
-                base_dir=config["base_dir"],
-                spot=config["spot"],
-                exchange=config["exchange"],
-            )
+        # "start_date_r_begin",
+        # "start_date_r_end",
+        # "end_date_r_begin",
+        # "end_date_r_end",
+
+        if config["start_date_r_begin"] is not None and config["start_date_r_end"] is not None and \
+                config["end_date_r_begin"] is not None and config["end_date_r_end"] is not None:
+            start_date_r_begin = datetime.strptime(config["start_date_r_begin"], '%Y-%m-%d')
+            start_date_r_end = datetime.strptime(config["start_date_r_end"], '%Y-%m-%d')
+            end_date_r_begin = datetime.strptime(config["end_date_r_begin"], '%Y-%m-%d')
+            end_date_r_end = datetime.strptime(config["end_date_r_end"], '%Y-%m-%d')
+            start_day_count = (start_date_r_end - start_date_r_begin).days + 1
+            end_day_count = (end_date_r_end - end_date_r_begin).days + 1
+            for sd in (start_date_r_begin + timedelta(i) for i in range(start_day_count)):
+                for ed in (end_date_r_begin + timedelta(j) for j in range(end_day_count)):
+                    config["start_date"] = sd.strftime("%Y-%m-%d")
+                    config["end_date"] = ed.strftime("%Y-%m-%d")
+                    await run_config(config, live_config, symbol)
         else:
-            downloader = Downloader(config)
-            data = await downloader.get_sampled_ticks()
-        config["n_days"] = round_((data[-1][0] - data[0][0]) / (1000 * 60 * 60 * 24), 0.1)
-        pprint.pprint(denumpyize(live_config))
-        plot_wrap(config, data)
+            await run_config(config, live_config, symbol)
 
 
 if __name__ == "__main__":

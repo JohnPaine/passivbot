@@ -831,6 +831,11 @@ class Downloader:
 
             chunk = pd.concat([left_overs, chunk])
             chunk.sort_values("timestamp", inplace=True)
+            # t1 = (chunk["timestamp"] >= self.start_time)
+            # t2 = (chunk["timestamp"] <= self.end_time)
+            # t3 = t1 & t2
+            # t4 = (chunk["timestamp"] >= self.start_time) & (chunk["timestamp"] <= self.end_time)
+            # assert t3 == t4, "What??!"
             chunk = chunk[
                 (chunk["timestamp"] >= self.start_time) & (chunk["timestamp"] <= self.end_time)
             ]
@@ -845,7 +850,12 @@ class Downloader:
             sampled_ticks = calc_samples(chunk[["timestamp", "qty", "price"]].values)
             if current_index != 0 and array[current_index - 1, 0] + 1000 != sampled_ticks[0, 0]:
                 size = int((sampled_ticks[0, 0] - array[current_index - 1, 0]) / sample_size_ms) - 1
+                # try:
                 tmp = np.zeros((size, 3), dtype=np.float64)
+                # except ValueError as e:
+                #     print(f"ValueError: {e}")
+                # except Exception as e:
+                #     print(f"Exception: {e}")
                 tmp[:, 0] = np.arange(
                     array[current_index - 1, 0] + sample_size_ms,
                     sampled_ticks[0, 0],

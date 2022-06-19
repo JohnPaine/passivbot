@@ -3,17 +3,24 @@
   market_type: futures
 
   # exchange from api-keys.json is used
-  user: binance_01
+  user: binance_backtest_1
 
   symbol: specify_symbol
   latency_simulation_ms: 1000
 
   # specify starting balance in terms of margin token (i.e. usdt for usdt-m, coin for inverse coin-m)
-  starting_balance: 100000.0
+  starting_balance: 1000.0
 
   # format YYYY-MM-DD
-  start_date: 2021-05-01
-  end_date: 2022-02-03
+  start_date: 2022-01-10
+  end_date: 2022-06-13
+
+  start_date_r_begin: 2022-01-01
+  start_date_r_end: 2022-02-15
+  end_date_r_begin: 2022-06-13
+  end_date_r_end: 2022-06-13
+
+  # coins: ADAUSDT,DOTUSDT,FTMUSDT,GALAUSDT,MATICUSDT,SOLUSDT,KAVAUSDT,LITUSDT,AXSUSDT,RUNEUSDT,DOGEUSDT,NEARUSDT,DYDXUSDT,C98USDT
 
   # non default historical data path
   # defaults to local dir if unspecified

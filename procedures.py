@@ -74,6 +74,12 @@ async def prepare_backtest_config(args) -> dict:
         "user",
         "start_date",
         "end_date",
+
+        "start_date_r_begin",
+        "start_date_r_end",
+        "end_date_r_begin",
+        "end_date_r_end",
+
         "starting_balance",
         "market_type",
         "base_dir",
@@ -89,6 +95,16 @@ async def prepare_backtest_config(args) -> dict:
         config["spot"] = args.market_type == "spot"
     config["start_date"] = ts_to_date_utc(date_to_ts(config["start_date"]))[:10]
     config["end_date"] = ts_to_date_utc(date_to_ts(config["end_date"]))[:10]
+
+    if config["start_date_r_begin"] is not None:
+        config["start_date_r_begin"] = ts_to_date_utc(date_to_ts(config["start_date_r_begin"]))[:10]
+    if config["start_date_r_end"] is not None:
+        config["start_date_r_end"] = ts_to_date_utc(date_to_ts(config["start_date_r_end"]))[:10]
+    if config["end_date_r_begin"] is not None:
+        config["end_date_r_begin"] = ts_to_date_utc(date_to_ts(config["end_date_r_begin"]))[:10]
+    if config["end_date_r_end"] is not None:
+        config["end_date_r_end"] = ts_to_date_utc(date_to_ts(config["end_date_r_end"]))[:10]
+
     config["exchange"], _, _ = load_exchange_key_secret(config["user"])
     config["session_name"] = (
         f"{config['start_date'].replace(' ', '').replace(':', '').replace('.', '')}_"

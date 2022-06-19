@@ -34,6 +34,7 @@ from procedures import (
     dump_live_config,
 )
 from time import sleep, time
+from datetime import datetime
 import logging
 import logging.config
 
@@ -124,6 +125,12 @@ class HarmonySearch:
             for s in self.symbols
         }
         self.date_range = f"{self.config['start_date']}_{self.config['end_date']}"
+
+        run_cond_file = self.results_fpath + "hs_run_conditions.json"
+        with open(run_cond_file, "w") as cond_write:
+            cond = {"date_range": self.date_range, "symbols": ','.join(self.symbols)}
+            json.dump(cond, cond_write, indent=4)
+
         self.bt_dir = os.path.join(self.config["base_dir"], self.exchange_name)
         self.ticks_cache_fname = (
             f"caches/{self.date_range}{'_ohlcv_cache.npy' if config['ohlcv'] else '_ticks_cache.npy'}"
@@ -340,7 +347,7 @@ class HarmonySearch:
             if self.do_long and score_long <= self.hm[best_key_long]["long"]["score"]:
                 is_better = True
                 logging.info(
-                    f"i{cfg['config_no']} - new best config long, score {score_long:.7f} "
+                    f"{datetime.now()}: i{cfg['config_no']} - new best config long, score {score_long:.7f} "
                     + f"adg {adg_mean_long / cfg['long']['wallet_exposure_limit']:.7f} "
                     + f"PAD mean {PAD_mean_long_raw:.7f} "
                     + f"PAD std {pa_distance_std_long_raw:.5f} adg/DGstd {adg_DGstd_ratios_long_mean:.7f}"
@@ -355,7 +362,7 @@ class HarmonySearch:
             if self.do_short and score_short <= self.hm[best_key_short]["short"]["score"]:
                 is_better = True
                 logging.info(
-                    f"i{cfg['config_no']} - new best config short, score {score_short:.7f} "
+                    f"{datetime.now()}: i{cfg['config_no']} - new best config short, score {score_short:.7f} "
                     + f"adg {adg_mean_short / cfg['short']['wallet_exposure_limit']:.7f} "
                     + f"PAD mean {PAD_mean_short_raw:.7f} "
                     + f"PAD std {pa_distance_std_short_raw:.5f} adg/DGstd {adg_DGstd_ratios_short_mean:.7f}"
@@ -370,7 +377,7 @@ class HarmonySearch:
             if is_better:
                 dump_live_config(best_config, tmp_fname + ".json")
             elif cfg["config_no"] % 25 == 0:
-                logging.info(f"i{cfg['config_no']}")
+                logging.info(f"{datetime.now()}: i{cfg['config_no']}")
             results["config_no"] = cfg["config_no"]
             with open(self.results_fpath + "all_results.txt", "a") as f:
                 f.write(
@@ -480,7 +487,7 @@ class HarmonySearch:
                     for e in sorted(self.hm[hm_key]["short"]["config"].items())
                 ]
             )
-        logging.info(line)
+        logging.info(f"{datetime.now()}: " + line)
 
         config["market_specific_settings"] = self.market_specific_settings[config["symbol"]]
         config["ticks_cache_fname"] = f"{self.bt_dir}/{config['symbol']}/{self.ticks_cache_fname}"

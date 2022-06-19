@@ -56,34 +56,38 @@
   # and at least 125 days of data,
   # sorted highest to lowest vol last 125 days
   symbols: [
-    "BTCUSDT", "ETHUSDT", "1000SHIBUSDT", "SOLUSDT", "SANDUSDT",
-    "FTMUSDT", "MANAUSDT", "LUNAUSDT", "DOGEUSDT", "GALAUSDT",
-    "BNBUSDT", "ADAUSDT", "XRPUSDT", "DOTUSDT", "MATICUSDT",
-    "AVAXUSDT", "ATOMUSDT", "NEARUSDT", "LINKUSDT", "AXSUSDT",
-    "LRCUSDT", "LTCUSDT", "DYDXUSDT", "EOSUSDT", "CRVUSDT",
-    "FILUSDT", "ONEUSDT", "ICPUSDT", "SUSHIUSDT", "ALICEUSDT",
-    "CHRUSDT", "ALGOUSDT", "XTZUSDT", "ETCUSDT", "OMGUSDT",
-    "ENJUSDT", "IOTXUSDT", "TLMUSDT", "CHZUSDT", "AAVEUSDT",
-    "BCHUSDT", "VETUSDT", "EGLDUSDT", "CELRUSDT", "THETAUSDT",
-    "SFPUSDT", "UNIUSDT", "TRXUSDT", "XLMUSDT", "1INCHUSDT",
-    #"GTCUSDT", "KEEPUSDT", "ZECUSDT", "STORJUSDT", "RUNEUSDT",
-    "GTCUSDT", "ZECUSDT", "STORJUSDT", "RUNEUSDT",
-    "BATUSDT", "YFIUSDT", "SXPUSDT", "GRTUSDT", "COTIUSDT",
-    "HOTUSDT", "ANKRUSDT", "LINAUSDT", "MASKUSDT", "QTUMUSDT",
-    "DENTUSDT", "C98USDT", "ARUSDT", "IOTAUSDT", "HNTUSDT",
-    "REEFUSDT", "NKNUSDT", "SRMUSDT", "HBARUSDT", "DODOUSDT",
-    "OCEANUSDT", "RSRUSDT", "ZENUSDT", "BLZUSDT", "ICXUSDT",
-    "KSMUSDT", "DASHUSDT", "WAVESUSDT", "COMPUSDT", "XMRUSDT",
-    "AUDIOUSDT", "KAVAUSDT", "BAKEUSDT", "CTKUSDT", "RENUSDT",
-    "BELUSDT", "IOSTUSDT", "CVCUSDT", "RLCUSDT", "NEOUSDT",
-    "SKLUSDT", "SNXUSDT", "KNCUSDT", "ONTUSDT", "RVNUSDT",
-    "LITUSDT", "ATAUSDT", "OGNUSDT", "ALPHAUSDT", "ZILUSDT",
-    "BANDUSDT", "UNFIUSDT", "CELOUSDT", "MKRUSDT", "SCUSDT",
-    "ZRXUSDT", "MTLUSDT", "STMXUSDT", "1000XECUSDT", "TOMOUSDT",
-    "TRBUSDT", "RAYUSDT", "AKROUSDT", "XEMUSDT", "FLMUSDT",
-    "BALUSDT", "YFIIUSDT", "BTSUSDT", "DGBUSDT", "BTCDOMUSDT",
-    "DEFIUSDT",
+    "ADAUSDT","DOTUSDT","FTMUSDT","GALAUSDT","MATICUSDT","SOLUSDT","KAVAUSDT","LITUSDT","AXSUSDT","RUNEUSDT"
   ]
+
+    # symbols: [
+    # "BTCUSDT", "ETHUSDT", "1000SHIBUSDT", "SOLUSDT", "SANDUSDT",
+    # "FTMUSDT", "MANAUSDT", "LUNAUSDT", "DOGEUSDT", "GALAUSDT",
+    # "BNBUSDT", "ADAUSDT", "XRPUSDT", "DOTUSDT", "MATICUSDT",
+    # "AVAXUSDT", "ATOMUSDT", "NEARUSDT", "LINKUSDT", "AXSUSDT",
+    # "LRCUSDT", "LTCUSDT", "DYDXUSDT", "EOSUSDT", "CRVUSDT",
+    # "FILUSDT", "ONEUSDT", "ICPUSDT", "SUSHIUSDT", "ALICEUSDT",
+    # "CHRUSDT", "ALGOUSDT", "XTZUSDT", "ETCUSDT", "OMGUSDT",
+    # "ENJUSDT", "IOTXUSDT", "TLMUSDT", "CHZUSDT", "AAVEUSDT",
+    # "BCHUSDT", "VETUSDT", "EGLDUSDT", "CELRUSDT", "THETAUSDT",
+    # "SFPUSDT", "UNIUSDT", "TRXUSDT", "XLMUSDT", "1INCHUSDT",
+    # #"GTCUSDT", "KEEPUSDT", "ZECUSDT", "STORJUSDT", "RUNEUSDT",
+    # "GTCUSDT", "ZECUSDT", "STORJUSDT", "RUNEUSDT",
+    # "BATUSDT", "YFIUSDT", "SXPUSDT", "GRTUSDT", "COTIUSDT",
+    # "HOTUSDT", "ANKRUSDT", "LINAUSDT", "MASKUSDT", "QTUMUSDT",
+    # "DENTUSDT", "C98USDT", "ARUSDT", "IOTAUSDT", "HNTUSDT",
+    # "REEFUSDT", "NKNUSDT", "SRMUSDT", "HBARUSDT", "DODOUSDT",
+    # "OCEANUSDT", "RSRUSDT", "ZENUSDT", "BLZUSDT", "ICXUSDT",
+    # "KSMUSDT", "DASHUSDT", "WAVESUSDT", "COMPUSDT", "XMRUSDT",
+    # "AUDIOUSDT", "KAVAUSDT", "BAKEUSDT", "CTKUSDT", "RENUSDT",
+    # "BELUSDT", "IOSTUSDT", "CVCUSDT", "RLCUSDT", "NEOUSDT",
+    # "SKLUSDT", "SNXUSDT", "KNCUSDT", "ONTUSDT", "RVNUSDT",
+    # "LITUSDT", "ATAUSDT", "OGNUSDT", "ALPHAUSDT", "ZILUSDT",
+    # "BANDUSDT", "UNFIUSDT", "CELOUSDT", "MKRUSDT", "SCUSDT",
+    # "ZRXUSDT", "MTLUSDT", "STMXUSDT", "1000XECUSDT", "TOMOUSDT",
+    # "TRBUSDT", "RAYUSDT", "AKROUSDT", "XEMUSDT", "FLMUSDT",
+    # "BALUSDT", "YFIIUSDT", "BTSUSDT", "DGBUSDT", "BTCDOMUSDT",
+    # "DEFIUSDT",
+    # ]
 
   bounds_static_grid:
   {
@@ -92,7 +96,7 @@
       grid_span: [0.1, 0.7]
       ema_span_0: [360, 4320]
       ema_span_1: [1440, 10080]
-      wallet_exposure_limit: [0.1, 0.1]
+      wallet_exposure_limit: [1.0, 1.0]
       max_n_entry_orders: [10, 10]
       initial_qty_pct: [0.01, 0.05]
       initial_eprice_ema_dist: [-0.1, 0.0]
@@ -111,7 +115,7 @@
       grid_span: [0.1, 0.7]
       ema_span_0: [360, 4320]
       ema_span_1: [1440, 10080]
-      wallet_exposure_limit: [0.1, 0.1]
+      wallet_exposure_limit: [1.0, 1.0]
       max_n_entry_orders: [10, 10]
       initial_qty_pct: [0.01, 0.05]
       initial_eprice_ema_dist: [-0.1, 0.0]
@@ -134,7 +138,7 @@
       ema_span_1: [1440, 10080]
       initial_qty_pct: [0.01, 0.05]
       initial_eprice_ema_dist: [-0.1, 0.0]
-      wallet_exposure_limit: [0.1, 0.1]
+      wallet_exposure_limit: [1.0, 1.0]
       ddown_factor: [0.05, 3.0]
       rentry_pprice_dist: [0.005, 0.05]
       rentry_pprice_dist_wallet_exposure_weighting: [0.0, 90.0]
@@ -150,7 +154,7 @@
       ema_span_1: [1440, 10080]
       initial_qty_pct: [0.01, 0.05]
       initial_eprice_ema_dist: [-0.1, 0.0]
-      wallet_exposure_limit: [0.1, 0.1]
+      wallet_exposure_limit: [1.0, 1.0]
       ddown_factor: [0.05, 3.0]
       rentry_pprice_dist: [0.005, 0.05]
       rentry_pprice_dist_wallet_exposure_weighting: [0.0, 90.0]
