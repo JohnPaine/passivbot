@@ -78,6 +78,10 @@ def plot_wrap(config, data):
 async def run_config(config, live_config, symbol):
     print()
 
+    config["session_name"] = (
+        f"{config['start_date'].replace(' ', '').replace(':', '').replace('.', '')}_"
+        f"{config['end_date'].replace(' ', '').replace(':', '').replace('.', '')}"
+    )
     base_dirpath = os.path.join(
         config["base_dir"],
         f"{config['exchange']}{'_spot' if 'spot' in config['market_type'] else ''}",
@@ -232,10 +236,10 @@ async def main():
             start_day_count = (start_date_r_end - start_date_r_begin).days + 1
             end_day_count = (end_date_r_end - end_date_r_begin).days + 1
             for sd in (start_date_r_begin + timedelta(i) for i in range(start_day_count)):
-                for ed in (end_date_r_begin + timedelta(j) for j in range(end_day_count)):
+                for ed in (end_date_r_end - timedelta(j) for j in range(end_day_count)):
                     config["start_date"] = sd.strftime("%Y-%m-%d")
                     config["end_date"] = ed.strftime("%Y-%m-%d")
-                    await run_config(config, live_config, symbol)
+                    await run_config(config.copy(), live_config.copy(), symbol)
         else:
             await run_config(config, live_config, symbol)
 
