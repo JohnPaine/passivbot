@@ -13,12 +13,12 @@
 
   # format YYYY-MM-DD
   start_date: 2022-01-03
-  end_date: 2022-06-17
+  end_date: 2022-06-15
 
-  start_date_r_begin: 2022-01-01
-  start_date_r_end: 2022-01-03
-  end_date_r_begin: 2022-06-13
-  end_date_r_end: 2022-06-16
+  start_date_r_begin: 2022-01-02
+  start_date_r_end: 2022-03-01
+  end_date_r_begin: 2022-05-01
+  end_date_r_end: 2022-06-17
 
   # my backtest 1 coins: ADAUSDT,DOTUSDT,FTMUSDT,GALAUSDT,MATICUSDT,SOLUSDT,KAVAUSDT,LITUSDT,AXSUSDT,RUNEUSDT,DOGEUSDT,NEARUSDT,DYDXUSDT,C98USDT
 

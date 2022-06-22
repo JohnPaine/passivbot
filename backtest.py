@@ -239,7 +239,7 @@ async def main():
                 for ed in (end_date_r_end - timedelta(j) for j in range(end_day_count)):
                     config["start_date"] = sd.strftime("%Y-%m-%d")
                     config["end_date"] = ed.strftime("%Y-%m-%d")
-                    await run_config(config.copy(), live_config.copy(), symbol)
+                    await run_config(config, live_config, symbol)
         else:
             await run_config(config, live_config, symbol)
 

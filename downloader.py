@@ -3,6 +3,7 @@ import asyncio
 import datetime
 import gzip
 import os
+import glob
 import sys
 from io import BytesIO
 from time import time
@@ -27,6 +28,16 @@ from procedures import (
     utc_ms,
 )
 from pure_funcs import ts_to_date, ts_to_date_utc, date_to_ts, get_dummy_settings
+from dataclasses import dataclass, fields
+
+
+@dataclass
+class ForeignCacheData:
+    cache_file_path: str = ""
+    cache_file_size: int = 0
+    start_d: datetime.date = datetime.date.today()
+    end_d: datetime.date = datetime.date.today()
+    use_foreign_cache: bool = False
 
 
 class Downloader:
@@ -45,6 +56,26 @@ class Downloader:
         self.tick_filepath = os.path.join(
             config["caches_dirpath"], f"{config['session_name']}_ticks_cache.npy"
         )
+        self.foreign_cache = ForeignCacheData()
+        self.start_d = datetime.datetime.strptime(config["start_date"], "%Y-%m-%d").date()
+        self.end_d = datetime.datetime.strptime(config["end_date"], "%Y-%m-%d").date()
+
+        if not os.path.exists(self.tick_filepath):
+            # search for ticks cache with wider range
+            cache_file_pattern = config["caches_dirpath"] + "*_ticks_cache.npy"
+            cache_files = glob.glob(cache_file_pattern)
+            for cache_file_path in cache_files:
+                print(f"{cache_file_path}")
+                cache_file_name = os.path.basename(cache_file_path)
+                parts = cache_file_name.split("_")
+                cache_start_d = datetime.datetime.strptime(parts[0], "%Y-%m-%d").date()
+                cache_end_d = datetime.datetime.strptime(parts[1], "%Y-%m-%d").date()
+                if self.start_d >= cache_start_d and self.end_d <= cache_end_d:
+                    file_size = os.path.getsize(cache_file_path)
+                    if not self.foreign_cache.cache_file_path or self.foreign_cache.cache_file_size > file_size:
+                        self.foreign_cache = ForeignCacheData(
+                            cache_file_path, file_size, cache_start_d, cache_end_d, True)
+
         try:
             self.start_time = int(
                 parser.parse(self.config["start_date"])
@@ -230,13 +261,13 @@ class Downloader:
         )
 
     def new_id(
-        self,
-        first_timestamp,
-        last_timestamp,
-        first_trade_id,
-        length,
-        start_time,
-        prev_div,
+            self,
+            first_timestamp,
+            last_timestamp,
+            first_trade_id,
+            length,
+            start_time,
+            prev_div,
     ):
         """
         Calculates a new id based on several parameters. Uses a weighted approach for more stability.
@@ -336,7 +367,7 @@ class Downloader:
             resp = urlopen(url)
             file_tmp = BytesIO()
             with tqdm.wrapattr(
-                open(os.devnull, "wb"), "write", miniters=1, total=getattr(resp, "length", None)
+                    open(os.devnull, "wb"), "write", miniters=1, total=getattr(resp, "length", None)
             ) as fout:
                 for chunk in resp:
                     fout.write(chunk)
@@ -379,11 +410,11 @@ class Downloader:
 
         if timestamp < guessed_chunk[0]["timestamp"]:
             guessed_id = guessed_chunk[0]["trade_id"] - len(guessed_chunk) * (
-                guessed_chunk[0]["timestamp"] - timestamp
+                    guessed_chunk[0]["timestamp"] - timestamp
             ) / (guessed_chunk[-1]["timestamp"] - guessed_chunk[0]["timestamp"])
         else:
             guessed_id = guessed_chunk[-1]["trade_id"] + len(guessed_chunk) * (
-                timestamp - guessed_chunk[-1]["timestamp"]
+                    timestamp - guessed_chunk[-1]["timestamp"]
             ) / (guessed_chunk[-1]["timestamp"] - guessed_chunk[0]["timestamp"])
         guessed_id = int(guessed_id - len(guessed_chunk) / 2)
         guessed_chunk = sorted(
@@ -403,7 +434,7 @@ class Downloader:
                 (daily_ticks.timestamp == df_for_id_matching.timestamp.iloc[idx])
                 & (daily_ticks.price == df_for_id_matching.price.iloc[idx])
                 & (daily_ticks.qty == df_for_id_matching.qty.iloc[idx])
-            ]
+                ]
             if len(match) == 1:
                 id_at_match = df_for_id_matching.trade_id.iloc[idx]
                 return np.arange(
@@ -469,6 +500,9 @@ class Downloader:
         mod_files = []
         highest_id = 0
         for f in filenames:
+
+            print(f"download_ticks, filename: {f}")
+
             verified = False
             try:
                 first_time = int(f.split("_")[2])
@@ -479,10 +513,10 @@ class Downloader:
                 first_time = sys.maxsize
                 last_time = sys.maxsize
             if (
-                not verified
-                and last_time >= self.start_time
-                and (self.end_time == -1 or (first_time <= self.end_time))
-                or last_time == sys.maxsize
+                    not verified
+                    and last_time >= self.start_time
+                    and (self.end_time == -1 or (first_time <= self.end_time))
+                    or last_time == sys.maxsize
             ):
                 print_(["Validating file", f, ts_to_date(first_time / 1000)])
                 df = self.read_dataframe(os.path.join(self.filepath, f))
@@ -498,21 +532,21 @@ class Downloader:
                         else gaps["start"].iloc[0]
                     )
                 if not gaps.empty and (
-                    f != filenames[-1] or str(first_id - first_id % 100000) not in f
+                        f != filenames[-1] or str(first_id - first_id % 100000) not in f
                 ):
                     last_id = df["trade_id"].iloc[-1]
                     for i in filenames:
                         tmp_first_id = int(i.split("_")[0])
                         tmp_last_id = int(i.split("_")[1].replace(".csv", ""))
                         if (
-                            (first_id - first_id % 100000) == tmp_first_id
-                            and (
+                                (first_id - first_id % 100000) == tmp_first_id
+                                and (
                                 (first_id - first_id % 100000 + 99999) == tmp_last_id
                                 or (highest_id == tmp_first_id or highest_id == tmp_last_id)
                                 or highest_id > last_id
-                            )
-                            and first_id != 1
-                            and i != f
+                        )
+                                and first_id != 1
+                                and i != f
                         ):
                             exists = True
                             break
@@ -558,7 +592,7 @@ class Downloader:
                                 df = df[
                                     df["trade_id"]
                                     <= gaps["end"].iloc[i] - gaps["end"].iloc[i] % 100000 + 99999
-                                ]
+                                    ]
                                 df.reset_index(drop=True, inplace=True)
                                 current_time = df["timestamp"].iloc[-1]
                             except Exception:
@@ -589,11 +623,11 @@ class Downloader:
             first_time = int(f.split("_")[2])
             last_time = int(f.split("_")[3].split(".")[0])
             if (
-                first_id - 1 != prev_last_id
-                and f not in mod_files
-                and first_time >= prev_last_time
-                and first_time >= self.start_time
-                and not prev_last_time > self.end_time
+                    first_id - 1 != prev_last_id
+                    and f not in mod_files
+                    and first_time >= prev_last_time
+                    and first_time >= self.start_time
+                    and not prev_last_time > self.end_time
             ):
                 chunk_gaps.append((prev_last_time, first_time, prev_last_id, first_id - 1))
             if first_time >= self.start_time or last_time >= self.start_time:
@@ -675,8 +709,8 @@ class Downloader:
                     df.reset_index(drop=True, inplace=True)
 
                     if not df.empty and (
-                        (df["trade_id"].iloc[0] % 100000 == 0 and len(df) >= 100000)
-                        or df["trade_id"].iloc[0] % 100000 != 0
+                            (df["trade_id"].iloc[0] % 100000 == 0 and len(df) >= 100000)
+                            or df["trade_id"].iloc[0] % 100000 != 0
                     ):
                         for index, row in df[df["trade_id"] % 100000 == 0].iterrows():
                             if index != 0:
@@ -684,7 +718,7 @@ class Downloader:
                                     df[
                                         (df["trade_id"] >= row["trade_id"] - 1000000)
                                         & (df["trade_id"] < row["trade_id"])
-                                    ],
+                                        ],
                                     "",
                                     True,
                                     False,
@@ -713,7 +747,7 @@ class Downloader:
                 )
 
             while (
-                current_id <= end_id and current_time <= end_time and utc_ms() - current_time > 10000
+                    current_id <= end_id and current_time <= end_time and utc_ms() - current_time > 10000
             ):
                 loop_start = time()
                 fetched_new_trades = await self.bot.fetch_ticks(int(current_id))
@@ -736,10 +770,10 @@ class Downloader:
                 if not tf.empty and len(df) > 1:
                     if df["trade_id"].iloc[0] % 100000 == 0 and len(tf) > 1:
                         self.save_dataframe(df[: tf.index[-1]], "", True, False)
-                        df = df[tf.index[-1] :]
+                        df = df[tf.index[-1]:]
                     elif df["trade_id"].iloc[0] % 100000 != 0 and len(tf) == 1:
                         self.save_dataframe(df[: tf.index[-1]], "", True, False)
-                        df = df[tf.index[-1] :]
+                        df = df[tf.index[-1]:]
                 await asyncio.sleep(max(0.0, self.fetch_delay_seconds - time() + loop_start))
             if not df.empty:
                 df = df[df["timestamp"] >= start_time]
@@ -766,7 +800,7 @@ class Downloader:
             f
             for f in self.get_filenames()
             if int(f.split("_")[3].split(".")[0]) >= self.start_time
-            and int(f.split("_")[2]) <= self.end_time
+               and int(f.split("_")[2]) <= self.end_time
         ]
         left_overs = pd.DataFrame()
         sample_size_ms = 1000
@@ -786,7 +820,7 @@ class Downloader:
             first_frame = first_frame[
                 (first_frame["timestamp"] >= self.start_time)
                 & (first_frame["timestamp"] <= self.end_time)
-            ]
+                ]
             earliest_time = first_frame.timestamp.iloc[0] // sample_size_ms * sample_size_ms
         except Exception as e:
             print_(["Error in determining earliest time", e])
@@ -806,7 +840,7 @@ class Downloader:
             last_frame = last_frame[
                 (last_frame["timestamp"] >= self.start_time)
                 & (last_frame["timestamp"] <= self.end_time)
-            ]
+                ]
             latest_time = last_frame.timestamp.iloc[-1] // sample_size_ms * sample_size_ms
         except Exception as e:
             print_(["Error in determining latest time", e])
@@ -818,6 +852,9 @@ class Downloader:
         )
 
         for f in filenames:
+
+            print(f"prepare_files, filename: {f}")
+
             chunk = pd.read_csv(
                 os.path.join(self.filepath, f),
                 dtype={
@@ -831,41 +868,53 @@ class Downloader:
 
             chunk = pd.concat([left_overs, chunk])
             chunk.sort_values("timestamp", inplace=True)
-            # t1 = (chunk["timestamp"] >= self.start_time)
-            # t2 = (chunk["timestamp"] <= self.end_time)
-            # t3 = t1 & t2
-            # t4 = (chunk["timestamp"] >= self.start_time) & (chunk["timestamp"] <= self.end_time)
-            # assert t3 == t4, "What??!"
             chunk = chunk[
                 (chunk["timestamp"] >= self.start_time) & (chunk["timestamp"] <= self.end_time)
-            ]
+                ]
 
             cut_off = (
-                chunk.timestamp.iloc[-1] // sample_size_ms * sample_size_ms - 1 - (1 * sample_size_ms)
+                    chunk.timestamp.iloc[-1] // sample_size_ms * sample_size_ms - 1 - (1 * sample_size_ms)
             )
 
             left_overs = chunk[chunk["timestamp"] > cut_off]
             chunk = chunk[chunk["timestamp"] <= cut_off]
 
             sampled_ticks = calc_samples(chunk[["timestamp", "qty", "price"]].values)
-            if current_index != 0 and array[current_index - 1, 0] + 1000 != sampled_ticks[0, 0]:
-                size = int((sampled_ticks[0, 0] - array[current_index - 1, 0]) / sample_size_ms) - 1
-                # try:
-                tmp = np.zeros((size, 3), dtype=np.float64)
-                # except ValueError as e:
-                #     print(f"ValueError: {e}")
-                # except Exception as e:
-                #     print(f"Exception: {e}")
-                tmp[:, 0] = np.arange(
-                    array[current_index - 1, 0] + sample_size_ms,
-                    sampled_ticks[0, 0],
-                    sample_size_ms,
-                    dtype=np.float64,
-                )
-                tmp[:, 2] = array[current_index - 1, 2]
-                array[current_index : current_index + len(tmp)] = tmp
-                current_index += len(tmp)
-            array[current_index : current_index + len(sampled_ticks)] = sampled_ticks
+            current_ts = array[current_index - 1, 0]
+            next_ts = current_ts + sample_size_ms
+            new_first_ts = sampled_ticks[0, 0]
+            if current_index != 0 and next_ts != new_first_ts:
+                missing_size = int((new_first_ts - current_ts) / sample_size_ms) - 1
+                if missing_size > 0:
+                    # add missing_size chunks with current_ts price and 0 qty from current_ts till new_first_ts
+                    tmp = np.zeros((missing_size, 3), dtype=np.float64)
+                    tmp[:, 0] = np.arange(
+                        next_ts,
+                        new_first_ts,
+                        sample_size_ms,
+                        dtype=np.float64,
+                    )
+                    tmp[:, 2] = array[current_index - 1, 2]
+                    array[current_index: current_index + len(tmp)] = tmp
+                    current_index += len(tmp)
+                else:
+                    # remove first missing_size rows from sampled_ticks
+                    # sampled_ticks = sampled_ticks[-missing_size:, :]
+                    print("\n\n\t\t!!!!!!!!!WARNING!!!!!!!!   !!!!!!!!!!!!!DEBUG!!!!!!!!!!\n\n")
+                    print(f"len(sampled_ticks) before change: {len(sampled_ticks)}")
+                    print(f"current_index: {current_index}")
+                    print(f"current_ts: {current_ts}")
+                    print(f"next_ts: {next_ts}")
+                    print(f"new_first_ts: {new_first_ts}")
+                    print(f"missing_size: {missing_size}")
+
+                    sampled_ticks = sampled_ticks[-missing_size:]
+
+                    print(f"len(sampled_ticks) AFTER change: {len(sampled_ticks)}")
+                    new_first_ts = sampled_ticks[0, 0]
+                    print(f"UPDATED new_first_ts: {new_first_ts}")
+
+            array[current_index: current_index + len(sampled_ticks)] = sampled_ticks
             current_index += len(sampled_ticks)
 
             print(
@@ -880,8 +929,8 @@ class Downloader:
         if not left_overs.empty:
             sampled_ticks = calc_samples(left_overs[["timestamp", "qty", "price"]].values)
             if current_index != 0 and array[current_index - 1, 0] + 1000 != sampled_ticks[0, 0]:
-                size = int((sampled_ticks[0, 0] - array[current_index - 1, 0]) / sample_size_ms) - 1
-                tmp = np.zeros((size, 3), dtype=np.float64)
+                missing_size = int((sampled_ticks[0, 0] - array[current_index - 1, 0]) / sample_size_ms) - 1
+                tmp = np.zeros((missing_size, 3), dtype=np.float64)
                 tmp[:, 0] = np.arange(
                     array[current_index - 1, 0] + sample_size_ms,
                     sampled_ticks[0, 0],
@@ -889,24 +938,24 @@ class Downloader:
                     dtype=np.float64,
                 )
                 tmp[:, 2] = array[current_index - 1, 2]
-                array[current_index : current_index + len(tmp)] = tmp
+                array[current_index: current_index + len(tmp)] = tmp
                 current_index += len(tmp)
-            array[current_index : current_index + len(sampled_ticks)] = sampled_ticks
+            array[current_index: current_index + len(sampled_ticks)] = sampled_ticks
             current_index += len(sampled_ticks)
 
         # Fill the gap at the end with the latest price
         # Should not be necessary anymore
         if current_index + 1 < len(array):
-            size = len(array) - current_index
-            tmp = np.zeros((size, 3), dtype=np.float64)
+            missing_size = len(array) - current_index
+            tmp = np.zeros((missing_size, 3), dtype=np.float64)
             tmp[:, 0] = np.arange(
                 array[current_index - 1, 0] + sample_size_ms,
-                array[current_index - 1, 0] + ((size + 1) * sample_size_ms),
+                array[current_index - 1, 0] + ((missing_size + 1) * sample_size_ms),
                 sample_size_ms,
                 dtype=np.float64,
             )
             tmp[:, 2] = array[current_index - 1, 2]
-            array[current_index : current_index + len(tmp)] = tmp
+            array[current_index: current_index + len(tmp)] = tmp
             current_index += len(tmp)
 
         print_(
@@ -930,7 +979,57 @@ class Downloader:
         if os.path.exists(self.tick_filepath):
             print_(["Loading cached tick data from", self.tick_filepath])
             tick_data = np.load(self.tick_filepath)
+            first_ts = tick_data[0, 0]
+            last_ts = tick_data[-1, 0]
+            print(f"first_ts: {first_ts}")
+            print(f"last_ts: {last_ts}")
+            start_d = ts_to_date(first_ts)
+            print(f"start_d: {start_d}")
+            end_d = ts_to_date(last_ts)
+            print(f"end_d: {end_d}")
             return tick_data
+        else:
+            # check for foreign cache, load its data and shrink it for the needed range
+            if os.path.exists(self.foreign_cache.cache_file_path):
+                tick_data = np.load(self.foreign_cache.cache_file_path)
+                diff_start_d = self.foreign_cache.start_d - self.start_d
+                diff_end_d = self.foreign_cache.end_d - self.end_d
+                diff_start_ticks = -diff_start_d.days * 60 * 60 * 24
+                diff_end_ticks = diff_end_d.days * 60 * 60 * 24
+
+                print(f"diff_start_ticks: {diff_start_ticks}")
+                print(f"diff_end_ticks: {diff_end_ticks}")
+
+                first_ts = tick_data[0, 0]
+                last_ts = tick_data[-1, 0]
+                print(f"first_ts: {first_ts}")
+                print(f"last_ts: {last_ts}")
+
+                start_d = ts_to_date(first_ts)
+                print(f"start_d: {start_d}")
+                end_d = ts_to_date(last_ts)
+                print(f"end_d: {end_d}")
+
+                if 0 < diff_start_ticks < len(tick_data):
+                    start_ts = tick_data[diff_start_ticks, 0]
+                    start_d = ts_to_date(start_ts)
+                    print(f"new start_d: {start_d}")
+                    tick_data = tick_data[diff_start_ticks:]
+                if 0 < diff_end_ticks < len(tick_data):
+                    end_ts = tick_data[-diff_end_ticks, 0]
+                    end_d = ts_to_date(end_ts)
+                    print(f"new end_d: {end_d}")
+                    tick_data = tick_data[:-diff_end_ticks]
+
+                first_ts = tick_data[0, 0]
+                last_ts = tick_data[-1, 0]
+                print(f"UPDATED FOREIGN_DATA first_ts: {first_ts}")
+                print(f"UPDATED FOREIGN_DATA last_ts: {last_ts}")
+                start_d = ts_to_date(first_ts)
+                print(f"UPDATED start_d: {start_d}")
+                end_d = ts_to_date(last_ts)
+                print(f"UPDATED end_d: {end_d}")
+                return tick_data
         await self.download_ticks()
         await self.prepare_files()
         tick_data = np.load(self.tick_filepath)
@@ -943,7 +1042,7 @@ def get_zip(url: str):
         resp = urlopen(url)
         file_tmp = BytesIO()
         with tqdm.wrapattr(
-            open(os.devnull, "wb"), "write", miniters=1, total=getattr(resp, "length", None)
+                open(os.devnull, "wb"), "write", miniters=1, total=getattr(resp, "length", None)
         ) as fout:
             for chunk in resp:
                 fout.write(chunk)
@@ -1019,11 +1118,11 @@ def download_ohlcvs(symbol, start_date, end_date, download_only=False) -> pd.Dat
 
 
 def load_hlc_cache(
-    symbol, start_date, end_date, base_dir="backtests", spot=False, exchange="binance"
+        symbol, start_date, end_date, base_dir="backtests", spot=False, exchange="binance"
 ):
     cache_fname = (
-        f"{ts_to_date_utc(date_to_ts(start_date))[:10]}_"
-        + f"{ts_to_date_utc(date_to_ts(end_date))[:10]}_ohlcv_cache.npy"
+            f"{ts_to_date_utc(date_to_ts(start_date))[:10]}_"
+            + f"{ts_to_date_utc(date_to_ts(end_date))[:10]}_ohlcv_cache.npy"
     )
 
     filepath = make_get_filepath(

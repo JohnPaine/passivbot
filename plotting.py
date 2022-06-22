@@ -175,7 +175,11 @@ def dump_plots(
     for side, fdf in [("long", longs), ("short", shorts)]:
         if result[side]["enabled"]:
             plt.clf()
-            fig = plot_fills(df, fdf, plot_whole_df=True, title=f"Overview Fills {side.capitalize()}")
+            try:
+                fig = plot_fills(df, fdf, plot_whole_df=True, title=f"Overview Fills {side.capitalize()}")
+            except Exception as e:
+                print(f"An exception occurred on plot fills: {e}")
+                continue
             fig.savefig(f"{result['plots_dirpath']}whole_backtest_{side}.png")
             print(f"\nplotting balance and equity {side}...")
             plt.clf()
@@ -261,7 +265,10 @@ def plot_fills(df, fdf_, side: int = 0, plot_whole_df: bool = False, title=""):
     if not plot_whole_df:
         dfc = dfc[(dfc.index > fdf.index[0]) & (dfc.index < fdf.index[-1])]
         dfc = dfc.loc[fdf.index[0] : fdf.index[-1]]
-    dfc.price.plot(style="y-", title=title, xlabel="Time", ylabel="Price + Fills")
+        try:
+            dfc.price.plot(style="y-", title=title, xlabel="Time", ylabel="Price + Fills")
+        except Exception as e:
+            print(f"An exception occurred on dfc price plot: {e}")
     if side >= 0:
         longs = fdf[fdf.type.str.contains("long")]
         lientry = longs[longs.type.str.contains("ientry")]
