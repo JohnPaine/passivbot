@@ -1,0 +1,1 @@
+"C:/Program Files/Python310/python.exe" C:/GitRepositories/my_passivbot/backtest.py -b configs/backtest/default.hjson -s FTMUSDT configs/backtest/recursive_grid_FTMUSDT_128days___test_1.json
