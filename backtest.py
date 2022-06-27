@@ -122,7 +122,7 @@ async def run_config(config, live_config, symbol):
         downloader = Downloader(config)
         data = await downloader.get_sampled_ticks()
     config["n_days"] = round_((data[-1][0] - data[0][0]) / (1000 * 60 * 60 * 24), 0.1)
-    pprint.pprint(denumpyize(live_config))
+    # pprint.pprint(denumpyize(live_config))
     plot_wrap(config, data)
 
 
@@ -244,7 +244,9 @@ async def main():
                             await run_config(config, live_config, symbol)
                             break
                         except Exception as e:
-                            print(f"An exception occurred on config {config} and symbol {symbol} run: {e}")
+                            # print(f"An exception occurred on config {config} and symbol {symbol} run: {e}")
+                            print(f"An exception occurred on config backtest run for symbol {symbol} in period "
+                                  f"[{config['start_date']} <---> {config['end_date']}]: {e}")
 
         else:
             await run_config(config, live_config, symbol)

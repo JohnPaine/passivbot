@@ -150,23 +150,31 @@ def numpyize(x):
 
 def denumpyize(x):
     if type(x) in [np.float64, np.float32, np.float16]:
+        # print(f"x = {x} is float")
         return float(x)
     elif type(x) in [np.int64, np.int32, np.int16, np.int8]:
+        # print(f"x = {x} is int")
         return int(x)
     elif type(x) == np.ndarray:
+        # print(f"x = {x} is ndarray")
         return [denumpyize(e) for e in x]
     elif type(x) == np.bool_:
+        # print(f"x = {x} is bool")
         return bool(x)
     elif type(x) in [dict, OrderedDict]:
+        # print(f"x = {x} is dict")
         denumpyd = {}
         for k, v in x.items():
             denumpyd[k] = denumpyize(v)
         return denumpyd
     elif type(x) == list:
+        # print(f"x = {x} is list")
         return [denumpyize(z) for z in x]
     elif type(x) == tuple:
+        # print(f"x = {x} is tuple")
         return tuple([denumpyize(z) for z in x])
     else:
+        # print(f"x = {x}, type = {type(x)}. denumpyize does nothing.")
         return x
 
 
