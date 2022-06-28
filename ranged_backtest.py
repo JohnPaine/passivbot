@@ -36,14 +36,12 @@ def main():
             end_date = ed.strftime("%Y-%m-%d")
             for symbol in config["symbols"]:
                 for live_config in config["live_configs"]:
-                    print(f"Running passivbot backtest for {symbol} and {live_config} in range [{start_date} - {end_date}]")
-                    # settings = ['C:/Program Files/Python310/python.exe', 'd:/GitProjects/my_passivbot/backtest.py',
-                    #             "-b", config["backtest_config"], "-s", symbol, "-sd", sd, "-ed", ed, live_config]
-                    # status = subprocess.call(['C:/Program Files/Python310/python.exe', 'd:/GitProjects/my_passivbot/backtest.py',
-                    #             "-b", config["backtest_config"], "-s", symbol, "-sd", start_date, "-ed", end_date, live_config])
-                    status = subprocess.run(
-                        ['C:/Program Files/Python310/python.exe', 'd:/GitProjects/my_passivbot/backtest.py',
-                         "-b", config["backtest_config"], "-s", symbol, "-sd", start_date, "-ed", end_date, live_config]).returncode
+                    settings = ['C:/Program Files/Python310/python.exe', 'backtest.py', "-b",
+                                config["backtest_config"], "-s", symbol, "-sd", start_date, "-ed", end_date,
+                                live_config]
+                    print(f"Running passivbot backtest for {symbol} and {live_config} in range "
+                          f"[{start_date} - {end_date}] with settings '{settings}'")
+                    status = subprocess.run(settings).returncode
                     print(f"status: {status}")
 
 

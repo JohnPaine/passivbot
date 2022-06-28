@@ -1,15 +1,15 @@
 {
 	# format YYYY-MM-DD
-	start_date_r_begin: 2022-01-23
+	start_date_r_begin: 2022-01-01
 	start_date_r_end: 2022-03-01
 	start_date_r_step: 2
 	end_date_r_begin: 2022-05-01
 	end_date_r_end: 2022-06-17
 	end_date_r_step: 2
 
-	symbols: ['FTMUSDT', 'ADAUSDT']
+	symbols: ['FTMUSDT']
 	
 	backtest_config: configs/backtest/default.hjson
 	
-	live_configs: ['configs/live/recursive_grid_mode_auto_unstuck_disabled.example.json']
+	live_configs: ['configs/backtest/recursive_grid_FTMUSDT_128days___test_1.json']
 }
