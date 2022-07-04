@@ -87,7 +87,7 @@ def backtest_wrap(config_: dict, ticks_caches: dict):
 
 
 class HarmonySearch:
-    def __init__(self, config: dict):
+    def __init__(self, config: dict, ticks_caches: dict = {}):
         self.config = config
         self.do_long = config["long"]["enabled"]
         self.do_short = config["short"]["enabled"]
@@ -142,7 +142,7 @@ class HarmonySearch:
             else {}
         )
         """
-        self.ticks_caches = {}
+        self.ticks_caches = ticks_caches
         self.shms = {}  # shared memories
         self.current_best_config = None
 
@@ -337,7 +337,8 @@ class HarmonySearch:
                 "short": deepcopy(self.hm[best_key_short]["short"]["config"]),
             }
             best_config["result"] = {
-                "symbol": f"{len(self.symbols)}_symbols",
+                # "symbol": f"{len(self.symbols)}_symbols",
+                "symbol": f"{self.symbols[0]}",
                 "exchange": self.config["exchange"],
                 "start_date": self.config["start_date"],
                 "end_date": self.config["end_date"],
@@ -759,6 +760,7 @@ async def main():
         cache_fname = f"{config['start_date']}_{config['end_date']}_ticks_cache.npy"
     exchange_name = config["exchange"] + ("_spot" if config["market_type"] == "spot" else "")
     config["symbols"] = sorted(config["symbols"])
+    ticks_caches = {}
     for symbol in config["symbols"]:
         cache_dirpath = os.path.join(config["base_dir"], exchange_name, symbol, "caches", "")
         if not os.path.exists(cache_dirpath + cache_fname) or not os.path.exists(
@@ -778,7 +780,7 @@ async def main():
                 )
             else:
                 downloader = Downloader({**config, **tmp_cfg})
-                await downloader.get_sampled_ticks()
+                ticks_caches[symbol] = await downloader.get_sampled_ticks()
 
     # prepare starting configs
     cfgs = []
@@ -815,7 +817,7 @@ async def main():
                 except Exception as e:
                     logging.error(f"error loading config {args.starting_configs}: {e}")
     config["starting_configs"] = cfgs
-    harmony_search = HarmonySearch(config)
+    harmony_search = HarmonySearch(config, ticks_caches)
     harmony_search.run()
 
 

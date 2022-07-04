@@ -78,18 +78,18 @@ def plot_wrap(config, data):
 async def run_config(config, live_config, symbol):
     print()
 
-    config["session_name"] = (
-        f"{config['start_date'].replace(' ', '').replace(':', '').replace('.', '')}_"
-        f"{config['end_date'].replace(' ', '').replace(':', '').replace('.', '')}"
-    )
-    base_dirpath = os.path.join(
-        config["base_dir"],
-        f"{config['exchange']}{'_spot' if 'spot' in config['market_type'] else ''}",
-        config["symbol"],
-    )
-    config["caches_dirpath"] = make_get_filepath(os.path.join(base_dirpath, "caches", ""))
-    config["optimize_dirpath"] = make_get_filepath(os.path.join(base_dirpath, "optimize", ""))
-    config["plots_dirpath"] = make_get_filepath(os.path.join(base_dirpath, "plots", ""))
+    # config["session_name"] = (
+    #     f"{config['start_date'].replace(' ', '').replace(':', '').replace('.', '')}_"
+    #     f"{config['end_date'].replace(' ', '').replace(':', '').replace('.', '')}"
+    # )
+    # base_dirpath = os.path.join(
+    #     config["base_dir"],
+    #     f"{config['exchange']}{'_spot' if 'spot' in config['market_type'] else ''}",
+    #     config["symbol"],
+    # )
+    # config["caches_dirpath"] = make_get_filepath(os.path.join(base_dirpath, "caches", ""))
+    # config["optimize_dirpath"] = make_get_filepath(os.path.join(base_dirpath, "optimize", ""))
+    # config["plots_dirpath"] = make_get_filepath(os.path.join(base_dirpath, "plots", ""))
 
     for k in (
             keys := [
@@ -222,34 +222,36 @@ async def main():
             live_config = spotify_config(live_config)
         config["ohlcv"] = args.ohlcv
 
-        # "start_date_r_begin",
-        # "start_date_r_end",
-        # "end_date_r_begin",
-        # "end_date_r_end",
+        await run_config(config, live_config, symbol)
 
-        if config["start_date_r_begin"] is not None and config["start_date_r_end"] is not None and \
-                config["end_date_r_begin"] is not None and config["end_date_r_end"] is not None:
-            start_date_r_begin = datetime.strptime(config["start_date_r_begin"], '%Y-%m-%d')
-            start_date_r_end = datetime.strptime(config["start_date_r_end"], '%Y-%m-%d')
-            end_date_r_begin = datetime.strptime(config["end_date_r_begin"], '%Y-%m-%d')
-            end_date_r_end = datetime.strptime(config["end_date_r_end"], '%Y-%m-%d')
-            start_day_count = (start_date_r_end - start_date_r_begin).days + 1
-            end_day_count = (end_date_r_end - end_date_r_begin).days + 1
-            for sd in (start_date_r_begin + timedelta(i) for i in range(start_day_count)):
-                for ed in (end_date_r_end - timedelta(j) for j in range(end_day_count)):
-                    config["start_date"] = sd.strftime("%Y-%m-%d")
-                    config["end_date"] = ed.strftime("%Y-%m-%d")
-                    while True:
-                        try:
-                            await run_config(config, live_config, symbol)
-                            break
-                        except Exception as e:
-                            # print(f"An exception occurred on config {config} and symbol {symbol} run: {e}")
-                            print(f"An exception occurred on config backtest run for symbol {symbol} in period "
-                                  f"[{config['start_date']} <---> {config['end_date']}]: {e}")
+        # "start_date_range_begin",
+        # "start_date_range_end",
+        # "end_date_range_begin",
+        # "end_date_range_end",
 
-        else:
-            await run_config(config, live_config, symbol)
+        # if config["start_date_range_begin"] is not None and config["start_date_range_end"] is not None and \
+        #         config["end_date_range_begin"] is not None and config["end_date_range_end"] is not None:
+        #     start_date_range_begin = datetime.strptime(config["start_date_range_begin"], '%Y-%m-%d')
+        #     start_date_range_end = datetime.strptime(config["start_date_range_end"], '%Y-%m-%d')
+        #     end_date_range_begin = datetime.strptime(config["end_date_range_begin"], '%Y-%m-%d')
+        #     end_date_range_end = datetime.strptime(config["end_date_range_end"], '%Y-%m-%d')
+        #     start_day_range_count = (start_date_range_end - start_date_range_begin).days + 1
+        #     end_day_count = (end_date_range_end - end_date_range_begin).days + 1
+        #     for sd in (start_date_range_begin + timedelta(i) for i in range(start_day_range_count)):
+        #         for ed in (end_date_range_end - timedelta(j) for j in range(end_day_count)):
+        #             config["start_date"] = sd.strftime("%Y-%m-%d")
+        #             config["end_date"] = ed.strftime("%Y-%m-%d")
+        #             while True:
+        #                 try:
+        #                     await run_config(config, live_config, symbol)
+        #                     break
+        #                 except Exception as e:
+        #                     # print(f"An exception occurred on config {config} and symbol {symbol} run: {e}")
+        #                     print(f"An exception occurred on config backtest run for symbol {symbol} in period "
+        #                           f"[{config['start_date']} <---> {config['end_date']}]: {e}")
+        #
+        # else:
+        #     await run_config(config, live_config, symbol)
 
 
 if __name__ == "__main__":

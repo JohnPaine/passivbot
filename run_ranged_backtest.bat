@@ -1,0 +1,1 @@
+"C:/Program Files/Python310/python.exe" C:/GitRepositories/my_passivbot/ranged_backtest.py

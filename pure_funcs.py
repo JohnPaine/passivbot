@@ -272,6 +272,8 @@ def candidate_to_live_config(candidate_: dict) -> dict:
         name += f"_adg{(result_dict['average_daily_gain']) * 100:.3f}%"
     elif "daily_gain" in result_dict:
         name += f"_adg{(result_dict['daily_gain'] - 1) * 100:.3f}%"
+    if "start_date" in result_dict and "end_date" in result_dict:
+        name += f"___{result_dict['start_date']}__{result_dict['end_date']}"
     live_config["config_name"] = name
     return denumpyize(live_config)
 

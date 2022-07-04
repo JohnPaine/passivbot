@@ -75,10 +75,10 @@ async def prepare_backtest_config(args) -> dict:
         "start_date",
         "end_date",
 
-        "start_date_r_begin",
-        "start_date_r_end",
-        "end_date_r_begin",
-        "end_date_r_end",
+        "start_date_range_begin",
+        "start_date_range_end",
+        "end_date_range_begin",
+        "end_date_range_end",
 
         "starting_balance",
         "market_type",
@@ -96,14 +96,14 @@ async def prepare_backtest_config(args) -> dict:
     config["start_date"] = ts_to_date_utc(date_to_ts(config["start_date"]))[:10]
     config["end_date"] = ts_to_date_utc(date_to_ts(config["end_date"]))[:10]
 
-    if config["start_date_r_begin"] is not None:
-        config["start_date_r_begin"] = ts_to_date_utc(date_to_ts(config["start_date_r_begin"]))[:10]
-    if config["start_date_r_end"] is not None:
-        config["start_date_r_end"] = ts_to_date_utc(date_to_ts(config["start_date_r_end"]))[:10]
-    if config["end_date_r_begin"] is not None:
-        config["end_date_r_begin"] = ts_to_date_utc(date_to_ts(config["end_date_r_begin"]))[:10]
-    if config["end_date_r_end"] is not None:
-        config["end_date_r_end"] = ts_to_date_utc(date_to_ts(config["end_date_r_end"]))[:10]
+    if config["start_date_range_begin"] is not None:
+        config["start_date_range_begin"] = ts_to_date_utc(date_to_ts(config["start_date_range_begin"]))[:10]
+    if config["start_date_range_end"] is not None:
+        config["start_date_range_end"] = ts_to_date_utc(date_to_ts(config["start_date_range_end"]))[:10]
+    if config["end_date_range_begin"] is not None:
+        config["end_date_range_begin"] = ts_to_date_utc(date_to_ts(config["end_date_range_begin"]))[:10]
+    if config["end_date_range_end"] is not None:
+        config["end_date_range_end"] = ts_to_date_utc(date_to_ts(config["end_date_range_end"]))[:10]
 
     config["exchange"], _, _ = load_exchange_key_secret(config["user"])
     config["session_name"] = (
