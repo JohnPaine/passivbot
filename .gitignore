@@ -353,3 +353,6 @@ live_configs/*
 configs/live/multigrid.json
 # Reports
 reports/*
+
+# Harmony search results are also excluded
+results_harmony_search_recursive_grid/
