@@ -1,14 +1,13 @@
 {
 	# format YYYY-MM-DD
-	start_date_range_begin: 2022-01-10
-	start_date_range_end: 2022-05-10
-	start_date_range_step: 10
-	end_date_range_begin: 2022-06-05
-	end_date_range_end: 2022-06-26
-	end_date_range_step: 20
+	start_date_range_begin: 2022-04-01
+	start_date_range_end: 2022-06-20
+	start_date_range_step: 15
+	end_date_range_begin: 2022-09-09
+	end_date_range_end: 2022-09-09
+	end_date_range_step: 1
 
-	#symbols: ['FTMUSDT','ADAUSDT','DOTUSDT','GALAUSDT','MATICUSDT','SOLUSDT','KAVAUSDT','LITUSDT','AXSUSDT','RUNEUSDT']
-	symbols: ['FTMUSDT','ADAUSDT','DOTUSDT','GALAUSDT','MATICUSDT','SOLUSDT']
+	symbols: ['FTMUSDT','MATICUSDT','SOLUSDT','ADAUSDT','DOTUSDT','GALAUSDT','KAVAUSDT','LITUSDT','AXSUSDT','RUNEUSDT']
 	
 	backtest_config: configs/backtest/default.hjson
 	
@@ -18,19 +17,45 @@
 		#'configs/backtest/001846_best_config_long___recgrid_SANDUSDT_147days__2022.01.01_2022.05.27.json'
 		#'configs/backtest/001935_best_config_short.json'
 		#'configs/backtest/002012_best_config_long.json'
+		
 		#'configs/backtest/002319_best_config_short___recgrid_MATICUSDT_147days__2022.01.01_2022.05.27.json'
 		#'configs/backtest/002389_best_config_short___recgrid_MATICUSDT_147days__2022.01.01_2022.05.27.json'
 		#'configs/backtest/002678_best_config_short___recgrid_MATICUSDT_147days__2022.01.01_2022.05.27.json'
 		#'configs/backtest/002877_best_config_short.json'
 		#'configs/backtest/002899_best_config_long___recgrid_MATICUSDT_147days__2022.01.01_2022.05.27.json'
+		
 		#'configs/backtest/002940_best_config_long.json'
 		#'configs/backtest/003445_best_config_short___recgrid_MATICUSDT_147days__2022.01.01_2022.05.27.json'
-		#'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08.json'
 		#'configs/backtest/003737_best_config_short___recgrid_MATICUSDT_147days__2022.01.01_2022.05.27.json'
 		#'configs/backtest/004207_best_config_short___recgrid_FTMUSDT_243days_2021-10-10_2022-06-10.json'
 		#'configs/backtest/004486_best_config_long.json'
 		#'configs/backtest/005245_best_config_long.json'
+		
 		#'configs/backtest/recgrid_FTMUSDT_128days.json'
-		'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08.json'
+		#'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08.json'
+		#'configs/backtest/000028_best_config_short___recursive_grid_FTMUSDT_137days___2022-01-15__2022-06-01.json'
+		#'configs/backtest/005564_best_config_long___recursive_grid_FTMUSDT_137days___2022-01-15__2022-06-01.json'
+		#'configs/backtest/003418_best_config_long___recursive_grid_FTMUSDT_137days___2022-01-15__2022-06-01.json'
+		#'configs/backtest/000077_best_config_short.json'
+		#'configs/backtest/003818_best_config_long.json'
+		#'configs/backtest/005264_best_config_short___recursive_grid_SOLUSDT_121days___2021-12-01__2022-04-01.json'
+		#'configs/backtest/008678_best_config_long___recursive_grid_FTMUSDT_121days___2021-12-01__2022-04-01.json'
+		
+		'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08___wel_1_1.json'
+		#'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08___wel_1_1.5.json'
+		#'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08___wel_1_2.json'
+		'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08___wel_1_2.5.json'
+		#'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08___wel_1_3.json'
+		#'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08___wel_1_3.5.json'
+		'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08___wel_1_4.json'
+		#'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08___wel_1_5.json'
+		#'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08___wel_1_6.json'
+		#'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08___wel_1_7.json'
+		#'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08___wel_1_8.json'
+		#'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08___wel_1_9.json'
+		#'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08___wel_0.5_2.json'
+		#'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08___wel_0.5_3.json'
+		#'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08___wel_0.5_4.json'
+		#'configs/backtest/003673_best_config_short____recgrid_FTMUSDT_128days(!49!)__2022.01.01_~2022.05.08___wel_0.5_5.json'
 	]
 }

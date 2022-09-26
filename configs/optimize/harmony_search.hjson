@@ -6,7 +6,7 @@
   pitch_adjusting_rate: 0.24
 
   n_cpus: 4
-  iters: 6000
+  iters: 10000
 
   # score formula choices:
   #  adg_PAD_mean
@@ -59,7 +59,14 @@
   #  "ADAUSDT","DOTUSDT","FTMUSDT","GALAUSDT","MATICUSDT","SOLUSDT","KAVAUSDT","LITUSDT","AXSUSDT","RUNEUSDT"
   #]
   
-  symbols: ["FTMUSDT"]
+  #symbols: [
+  #  "ADAUSDT","DOTUSDT","FTMUSDT","GALAUSDT","MATICUSDT","SOLUSDT"
+  #]
+  
+  # symbols: ['FTMUSDT','MATICUSDT','SOLUSDT','ADAUSDT','DOTUSDT','GALAUSDT','KAVAUSDT','LITUSDT','AXSUSDT','RUNEUSDT']
+  symbols: ['FTMUSDT','MATICUSDT','SOLUSDT','ADAUSDT','DOTUSDT']
+  
+  # symbols: ["FTMUSDT"]
 
     # symbols: [
     # "BTCUSDT", "ETHUSDT", "1000SHIBUSDT", "SOLUSDT", "SANDUSDT",
@@ -98,7 +105,7 @@
       grid_span: [0.1, 0.7]
       ema_span_0: [360, 4320]
       ema_span_1: [1440, 10080]
-      wallet_exposure_limit: [0.3, 0.3]
+      wallet_exposure_limit: [3, 3]
       max_n_entry_orders: [10, 10]
       initial_qty_pct: [0.01, 0.05]
       initial_eprice_ema_dist: [-0.1, 0.0]
@@ -117,7 +124,7 @@
       grid_span: [0.1, 0.7]
       ema_span_0: [360, 4320]
       ema_span_1: [1440, 10080]
-      wallet_exposure_limit: [0.8, 0.8]
+      wallet_exposure_limit: [1, 1]
       max_n_entry_orders: [10, 10]
       initial_qty_pct: [0.01, 0.05]
       initial_eprice_ema_dist: [-0.1, 0.0]
@@ -140,7 +147,7 @@
       ema_span_1: [1440, 10080]
       initial_qty_pct: [0.01, 0.05]
       initial_eprice_ema_dist: [-0.1, 0.0]
-      wallet_exposure_limit: [0.3, 0.3]
+      wallet_exposure_limit: [3, 3]
       ddown_factor: [0.05, 3.0]
       rentry_pprice_dist: [0.005, 0.05]
       rentry_pprice_dist_wallet_exposure_weighting: [0.0, 90.0]
@@ -156,7 +163,7 @@
       ema_span_1: [1440, 10080]
       initial_qty_pct: [0.01, 0.05]
       initial_eprice_ema_dist: [-0.1, 0.0]
-      wallet_exposure_limit: [0.8, 0.8]
+      wallet_exposure_limit: [1, 1]
       ddown_factor: [0.05, 3.0]
       rentry_pprice_dist: [0.005, 0.05]
       rentry_pprice_dist_wallet_exposure_weighting: [0.0, 90.0]

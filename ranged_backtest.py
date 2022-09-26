@@ -17,6 +17,15 @@ def main():
         default="configs/backtest/ranged_backtest.hjson",
         help="ranged backtest config hjson file",
     )
+    # parser.add_argument(
+    #     "-np",
+    #     "--num_processes",
+    #     type=int,
+    #     required=False,
+    #     dest="num_processes",
+    #     default=1,
+    #     help="number of subprocesses to create for backtests",
+    # )
     args = parser.parse_args()
 
     config = load_hjson_config(args.config_path)
@@ -34,7 +43,7 @@ def main():
     num_iters = math.ceil(start_day_range_count / start_date_range_step if start_date_range_step > 0 else 0)
     num_iters *= math.ceil(end_day_range_count / end_date_range_step if end_date_range_step > 0 else 0)
     num_iters *= math.ceil(len(config["symbols"]) * len(config["live_configs"]))
-    i, j, iter_counter = 0, 0, 0
+    i, j, iter_counter, num_processes = 0, 0, 0, 0
     for sd in (start_date_range_begin + timedelta(i) for i in range(0, start_day_range_count, start_date_range_step)):
         for ed in (end_date_range_end - timedelta(j) for j in range(0, end_day_range_count, end_date_range_step)):
             start_date = sd.strftime("%Y-%m-%d")
@@ -47,8 +56,11 @@ def main():
                     print(f"\n\n{datetime.today()}\t\t{iter_counter} / {num_iters}. Running passivbot backtest for "
                           f"{symbol} and {live_config} in range [{start_date} - {end_date}] with settings:\n'{settings}'\n")
 
+                    # if args.num_processes == 1:
                     status = subprocess.run(settings).returncode
                     print(f"Status: {status}")
+                    # else:
+                    #     pass
 
 
 if __name__ == "__main__":
