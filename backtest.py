@@ -52,6 +52,12 @@ def backtest(config: dict, data: np.ndarray, do_print=False) -> (list, bool):
     )
 
 
+def timestamp_to_datetime(ts: float):
+    ts_int = int(ts / 1000)
+    # return datetime.fromtimestamp(ts_int)
+    return datetime.fromtimestamp(ts_int).strftime("%Y.%m.%d_%H.%M.%S")
+
+
 def plot_wrap(config, data):
     print("n_days", round_(config["n_days"], 0.1))
     print("starting_balance", config["starting_balance"])
@@ -70,7 +76,11 @@ def plot_wrap(config, data):
     longs.to_csv(config["plots_dirpath"] + "fills_long.csv")
     shorts.to_csv(config["plots_dirpath"] + "fills_short.csv")
     sdf.to_csv(config["plots_dirpath"] + "stats.csv")
+    # ts = data[:, 0]
+    # ts_to_dt = np.vectorize(timestamp_to_datetime)
+    # ts_dt = ts_to_dt(ts)
     df = pd.DataFrame({**{"timestamp": data[:, 0], "qty": data[:, 1], "price": data[:, 2]}, **{}})
+                          # "ts_dt": ts_dt}, **{}})
     print("dumping plots...")
     dump_plots(config, longs, shorts, sdf, df, n_parts=config["n_parts"])
 

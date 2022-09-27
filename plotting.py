@@ -10,6 +10,12 @@ from njit_funcs import round_up
 from procedures import dump_live_config
 from pure_funcs import round_dynamic, denumpyize
 
+from dateutil.tz import tzlocal
+from numpy import datetime64
+from pandas import DatetimeIndex
+from matplotlib.dates import DateFormatter
+from matplotlib.figure import Figure
+
 
 def dump_plots(
     result: dict,
@@ -246,12 +252,12 @@ def dump_plots(
     print("plotting pos sizes...")
     plt.clf()
 
-    sdf[["psize_long", "psize_short"]].plot(
-        title="Position size in terms of contracts",
-        xlabel="Time",
-        ylabel="Position size",
-    )
-    plt.savefig(f"{result['plots_dirpath']}psizes_plot.png")
+    # sdf[["psize_long", "psize_short"]].plot(
+    #     title="Position size in terms of contracts",
+    #     xlabel="Time",
+    #     ylabel="Position size",
+    # )
+    # plt.savefig(f"{result['plots_dirpath']}psizes_plot.png")
 
 
 def plot_fills(df, fdf_, side: int = 0, plot_whole_df: bool = False, title=""):
@@ -266,7 +272,14 @@ def plot_fills(df, fdf_, side: int = 0, plot_whole_df: bool = False, title=""):
         dfc = dfc[(dfc.index > fdf.index[0]) & (dfc.index < fdf.index[-1])]
         dfc = dfc.loc[fdf.index[0] : fdf.index[-1]]
         try:
+
             dfc.price.plot(style="y-", title=title, xlabel="Time", ylabel="Price + Fills")
+
+            # ts_int = dfc["timestamp"].astype(int)
+            # dt64s = dfc["timestamp"]
+            # dt64s = ts_int
+            # dti = DatetimeIndex(dt64s)  ##, tz=tzlocal())
+            # print(dti)
         except Exception as e:
             print(f"An exception occurred on dfc price plot: {e}")
     if side >= 0:
